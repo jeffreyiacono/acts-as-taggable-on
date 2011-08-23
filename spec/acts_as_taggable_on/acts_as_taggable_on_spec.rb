@@ -323,9 +323,9 @@ describe "Acts As Taggable On" do
        before  { @taggable.update_attributes(:language_list => 'ruby, .net') }
        subject { @taggable }
 
-       its(:language_list)        { should == ['ruby', '.net']}
-       its(:cached_language_list) { should == 'ruby, .net' }           # passes
-       its(:instance_variables)   { should     include('@language_list') }
+       its(:language_list)        { should == ['ruby', '.net']          }
+       its(:cached_language_list) { should == 'ruby, .net'              }
+       its(:instance_variables)   { should     include(:@language_list) }
      end
 
      context 'status taggings cache after update' do
@@ -333,10 +333,10 @@ describe "Acts As Taggable On" do
        subject { @taggable }
 
        its(:status_list)        { should     == ['happy', 'married'] }
-       its(:cached_status_list) { should     == 'happy, married'     } # fails
-       its(:cached_status_list) { should_not == ''                   } # fails, is blank
-       its(:instance_variables) { should     include('@status_list') }
-       its(:instance_variables) { should_not include('@statu_list')  } # fails, note: one "s"
+       its(:cached_status_list) { should     == 'happy, married'     }
+       its(:cached_status_list) { should_not == ''                   }
+       its(:instance_variables) { should     include(:@status_list)  }
+       its(:instance_variables) { should_not include(:@statu_list)   }
      end
 
      context 'glass taggings cache after update' do
@@ -346,10 +346,10 @@ describe "Acts As Taggable On" do
 
        subject { @taggable }
        its(:glass_list)         { should     == ['rectangle', 'aviator'] }
-       its(:cached_glass_list)  { should     == 'rectangle, aviator'     } # fails
-       its(:cached_glass_list)  { should_not == ''                       } # fails, is blank
-       its(:instance_variables) { should     include('@glass_list')      }
-       its(:instance_variables) { should_not include('@glas_list')       } # fails, note: one "s"
+       its(:cached_glass_list)  { should     == 'rectangle, aviator'     }
+       its(:cached_glass_list)  { should_not == ''                       }
+       its(:instance_variables) { should     include(:@glass_list)       }
+       its(:instance_variables) { should_not include(:@glas_list)        }
      end
    end
   end
