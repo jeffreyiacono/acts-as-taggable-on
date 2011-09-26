@@ -17,7 +17,9 @@ was used.
 
 === Rails 2.3.x
 
-Acts As Taggable On is tested to work in Rails 2.3.5. 
+The last version of gem that is compatible with Rails 2.3.x is 2.1.0.
+
+We are planning no longer to support Rails 2, but if you want to contribute something only for Rails 2, we left rails2 branch for that.
 
 ==== Plugin
 
@@ -29,7 +31,7 @@ traditional plugin you can install like so:
 Acts As Taggable On is also available as a gem plugin using Rails 2.1's gem dependencies.
 To install the gem, add this to your config/environment.rb:
   
-  config.gem "acts-as-taggable-on", :source => "http://gemcutter.org", :version => '2.0.0.rc1'
+  config.gem "acts-as-taggable-on", :source => "http://gemcutter.org", :version => '2.1.0'
   
 After that, you can run "rake gems:install" to install the gem if you don't already have it.
 
@@ -38,14 +40,11 @@ After that, you can run "rake gems:install" to install the gem if you don't alre
 1. script/generate acts_as_taggable_on_migration
 2. rake db:migrate
 
-=== Rails 3.0
-
-Acts As Taggable On is now useable in Rails 3.0, thanks to the excellent work of Szymon Nowak
-and Jelle Vandebeeck.
+=== Rails 3.x
 
 To use it, add it to your Gemfile:
   
-  gem 'acts-as-taggable-on'
+  gem 'acts-as-taggable-on', '~>2.1.0'
 
 ==== Post Installation
 
@@ -54,19 +53,10 @@ To use it, add it to your Gemfile:
 
 == Testing
 
-Acts As Taggable On uses RSpec for its test coverage. Inside the plugin
-directory, you can run the specs for RoR 3.0.0 with:
+Acts As Taggable On uses RSpec for its test coverage. Inside the gem
+directory, you can run the specs for RoR 3.x with:
 
   rake spec
-
-If you want to test the plugin for Rails 2.3.x, use:
-
-  rake rails2.3:spec
-
-If you already have RSpec on your application, the specs will run while using:
-
-rake spec:plugins
-
 
 == Usage
 
@@ -159,8 +149,10 @@ Tags can have owners:
     @some_user.tag(@some_photo, :with => "paris, normandy", :on => :locations)
     @some_user.owned_taggings
     @some_user.owned_tags
-    @some_photo.locations_from(@some_user)
-    
+    @some_photo.locations_from(@some_user) # => ["paris", "normandy"]
+    @some_photo.owner_tags_on(@some_user, :locations) # => [#<ActsAsTaggableOn::Tag id: 1, name: "paris">...]
+    @some_photo.owner_tags_on(nil, :locations) # => Ownerships equivalent to saying @some_photo.locations
+
 === Tag cloud calculations
 
 To construct tag clouds, the frequency of each tag needs to be calculated.
@@ -201,8 +193,14 @@ CSS:
   .css3 { font-size: 1.4em; }
   .css4 { font-size: 1.6em; }
 
+== Why TaggableModel.joins(:tags) doesn't work (only for Rails >=3.0.10)?
+
+When you define acts_as_taggable_on in your model it add <tt>has_many :through</tt> associations to your model. In this +has_many+ declaration we join 'tags' table using rails ":include" statement, also we use additional ":conditions" statement where we refer to joined 'tags' table. In rails 3.0.10 they changed logic, and {now}[https://github.com/rails/rails/commit/caec63929fabe0368da71128c96e74c174791eb9] <tt>joins</tt> which is mode on model, substitutes 'include' from has_many declaration and place 'joins' at the end of sql, after 'conditions'. So Joining is happened but after 'Where'. 
+While we are trying to figure out how to fix this, please use Rails 3.0.9 or don't use Model.joins(:tags)
+
 == Contributors
 
+* Artem Kramarenko (artemk) - Maintainer
 * TomEric (i76) - Maintainer
 * Michael Bleigh - Original Author
 * Szymon Nowak - Rails 3.0 compatibility
@@ -221,4 +219,4 @@ CSS:
 * lawrencepit - cached tag work
 * sobrinho - fixed tag_cloud helper
 
-Copyright (c) 2007-2010 Michael Bleigh (http://mbleigh.com/) and Intridea Inc. (http://intridea.com/), released under the MIT license
+Copyright (c) 2007-2011 Michael Bleigh (http://mbleigh.com/) and Intridea Inc. (http://intridea.com/), released under the MIT license
