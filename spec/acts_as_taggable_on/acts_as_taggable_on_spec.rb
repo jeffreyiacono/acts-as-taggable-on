@@ -309,22 +309,6 @@ describe "Acts As Taggable On" do
     end
   end
 
-  # note: ActsAsTaggableOn::Core#tag_list_cache_on is passed a context that is
-  #       singular via ActsAsTaggableOn::Cache#save_cached_tag_list, which
-  #       then calls singularize again on the context.
-  #
-  #       ActiveSupport::Inflector#singularize, not knowing any better, will
-  #       re-signularize an already singularized string, so:
-  #         "status".singularize => "statu"
-  #
-  #       see: https://github.com/rails/rails/issues/2608
-  #
-  #       This causes a bad instance variable to be set (@status_list vs
-  #       @statu_list to continue with the above example) and a cached column
-  #       will be set to ""
-  #
-  #       Thus, any tagging context that ends w/ "s" when singular will not
-  #       cache properly
   context 'when tagging context ends in an "s" when singular (ex. "status", "glass", etc.)' do
     describe 'caching' do
       before  { @taggable = OtherCachedModel.new(:name => "John Smith") }
